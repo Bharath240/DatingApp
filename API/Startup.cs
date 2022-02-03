@@ -46,6 +46,8 @@ namespace API
                 //Now, we can access our DB from the above connection
                 
             });
+
+            services.AddCors(); //Adds cross-origin resource sharing services to the specified IServiceCollection.
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,6 +63,8 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(policy => policy.AllowAnyHeader().AllowAnyHeader().WithOrigins("http://localhost:4200"));
 
             app.UseAuthorization();
 

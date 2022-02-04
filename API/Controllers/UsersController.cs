@@ -11,11 +11,12 @@ namespace API.Controllers
 {
 
 
-    [ApiController] //Attribute
-    [Route("api/[controller]")]
-    public class UsersController : ControllerBase //deriving it from ControllerBase
+    // [ApiController] //Attribute
+    // [Route("api/[controller]")]
+    public class UsersController : BaseApiController //Inheriting it from BaseApiController
+    //As we Inherited it from BaseApiController, we no longer need to specify attributes [ApiController] and  [Route("api/[controller]")]
     {
-        //We need to get the data from DataBase, for that we are going to use dependency injection
+        //We need to get the data from DataBase, for that we are going to use dependency injection 
         private readonly DataContext _context;
         public UsersController(DataContext context) {
             _context = context;

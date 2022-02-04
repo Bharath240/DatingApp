@@ -1,8 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using API.Data;
+using API.Extensions;
+using API.Interfaces;
+using API.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace API
@@ -30,24 +36,14 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddApplicationServices(_config); //populating all application services in Extensions >> ApplicationServiceExtensions
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });
             });
-
-            //Added DataContext as a service and passing options using lamda expression
-            //To connect our application to the database, we are passing our connection in Sqlite as below
-            //Connections are provided in configuration files (appsettings.json/appsettings.Development.json)
-            services.AddDbContext<DataContext>(options => {
-                
-                options.UseSqlite(_config.GetConnectionString("DefaultConnection")); //setting up our connection
-                //Now, we can access our DB from the above connection
-                
-            });
-
             services.AddCors(); //Adds cross-origin resource sharing services to the specified IServiceCollection.
+            services.AddIdentityServices(_config); //populating all Identity services in Extensions >> IdentityServiceExtensions
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +62,7 @@ namespace API
 
             app.UseCors(policy => policy.AllowAnyHeader().AllowAnyHeader().WithOrigins("http://localhost:4200"));
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

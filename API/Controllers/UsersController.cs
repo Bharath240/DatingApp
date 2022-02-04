@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,7 +45,9 @@ namespace API.Controllers
 
         //Endpoint 2
         //api/users/id
+        [Authorize] //Making our API authorized (secured), checks and validates with authorization key to get request 
         [HttpGet("{id}")] 
+    
         public async Task<ActionResult<AppUser>>  getUsers(int id)  {
 
             var user = await _context.Users.FindAsync(id); //Gettting specific user data based on their Id from Database

@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { User } from './_models/users';
+import { AccountService } from './_services/account.service';
 
 @Component({
   selector: 'app-root',
@@ -10,25 +12,23 @@ export class AppComponent implements OnInit {
   title = 'The Dating App';
 
   users : any;
-  constructor(private http : HttpClient){
+  constructor(private accountService: AccountService){
 
   }
 
 
   //It is invoked only once when the directive is instantiated
   ngOnInit(){
-    this.getUsers();
+  
+    this.setCurrentUser();
   }
 
 
-  //method to get users data from GET API
-  getUsers(){
-    this.http.get("https://localhost:5001/api/users").subscribe(response => {
-      this.users = response
-    }, error =>{
-      console.log(error)
-    })  
-    //Constructs a GET request that interprets the body as a JSON object 
-    //and returns the response body as a JSON object.
+
+
+  //Method to check local storage of browser for checking a key 'user'
+  setCurrentUser(){
+    const user: User = JSON.parse(localStorage.getItem('user'));
+    this.accountService.setCurrentUser(user);
   }
 }
